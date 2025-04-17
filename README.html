@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>ECG Signal Processing and Analysis</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="ecg-signal-processing-and-analysis">ECG Signal Processing and Analysis</h1>
+<p>This repository provides an end-to-end solution for ECG signal analysis using various signal processing techniques. The goal of this project is to analyze ECG signals for detecting peaks, heart rate, and removing abnormal peaks like PVCs (Premature Ventricular Contractions). The system uses several algorithms for signal enhancement and analysis, such as the Pan-Tompkins algorithm, FFT analysis, and the detection of AF (Atrial Fibrillation).</p>
+<h2 id="files">Files</h2>
+<h3 id="1-mainpy">1. <code>main.py</code></h3>
+<p>The main script that orchestrates the workflow, including the loading of ECG data, execution of signal processing techniques, and the visualization of results.</p>
+<p><strong>Key Functions:</strong></p>
+<ul>
+<li><code>load_ecg_data(filepath, sample_freq, begin, end)</code>: Loads ECG signal data from a <code>.mat</code> file.</li>
+<li><code>example_plots.analyze_fft()</code>: Generates FFT analysis and visualizations.</li>
+<li><code>PanTompkins</code>: Runs the Pan-Tompkins algorithm for peak detection and smoothing.</li>
+<li><code>replace_pvc_R_peak()</code>: Replaces PVC-induced R-peaks with median values of adjacent peaks.</li>
+<li><code>AF_detection</code>: Detects and analyzes Atrial Fibrillation segments in the ECG signal.</li>
+</ul>
+<h3 id="2-example_plotspy">2. <code>example_plots.py</code></h3>
+<p>Contains helper functions for plotting various types of visualizations of the ECG signal and its analysis.</p>
+<p><strong>Key Functions:</strong></p>
+<ul>
+<li><code>analyze_fft()</code>: Performs FFT analysis and plots both the frequency spectrum and the time-domain ECG signal.</li>
+<li><code>plot_smoothed_ecg()</code>: Plots the smoothed ECG signal after applying the Pan-Tompkins algorithm.</li>
+<li><code>plot_ecg_peaks()</code>: Plots Q, S, and R peaks on the ECG signal.</li>
+</ul>
+<h3 id="3-pan_tompkinspy">3. <code>pan_tompkins.py</code></h3>
+<p>Contains the implementation of the Pan-Tompkins algorithm for detecting R-peaks, along with preprocessing steps such as bandpass filtering and derivative-based peak detection.</p>
+<p><strong>Key Methods:</strong></p>
+<ul>
+<li><code>__bandpass_filter()</code>: Applies a bandpass filter to the ECG signal.</li>
+<li><code>__derivative_filter()</code>: Computes the derivative of the ECG signal.</li>
+<li><code>__find_peaks()</code>: Detects R-peaks using the filtered ECG signal.</li>
+<li><code>run()</code>: Runs the full Pan-Tompkins algorithm, returning results including heart rate and RR intervals.</li>
+</ul>
+<h3 id="4-detection_functionpy">4. <code>detection_function.py</code></h3>
+<p>Contains the <code>AF_detection</code> class which is used for detecting Atrial Fibrillation (AF) based on FFT analysis and segment merging.</p>
+<p><strong>Key Methods:</strong></p>
+<ul>
+<li><code>high_pass_filter()</code>: Applies a high-pass filter to remove low-frequency noise.</li>
+<li><code>running_fft()</code>: Calculates the FFT intensity over a sliding window.</li>
+<li><code>replace_outliers()</code>: Detects and replaces outliers in the ECG signal.</li>
+<li><code>find_high_energy_segments()</code>: Identifies segments of high energy, indicating potential AF.</li>
+</ul>
+<h2 id="how-to-use">How to Use</h2>
+<ol>
+<li>
+<p><strong>Prepare Your ECG Data:</strong></p>
+<ul>
+<li>Ensure that you have a <code>.mat</code> file containing ECG signal data. The data should include the raw ECG signal (typically in microvolts or millivolts).</li>
+</ul>
+</li>
+<li>
+<p><strong>Run the Main Script:</strong></p>
+<ul>
+<li>Set the file path and the parameters for the analysis in <code>main.py</code>.</li>
+<li>The script will load the ECG data, apply preprocessing steps, run algorithms like Pan-Tompkins, and produce various plots and statistics.</li>
+</ul>
+</li>
+<li>
+<p><strong>Visualize Results:</strong></p>
+<ul>
+<li>The code will generate plots showing the ECG signal with detected peaks, FFT analysis, and any anomalies such as PVCs or AF.</li>
+</ul>
+</li>
+<li>
+<p><strong>Customize:</strong></p>
+<ul>
+<li>You can adjust parameters such as the sample frequency (<code>SAMPLE_F</code>), the range of the analysis (<code>start_analysis</code>, <code>end_analysis</code>), and the frequency threshold for FFT analysis.</li>
+</ul>
+</li>
+</ol>
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+<li><code>numpy</code>: Numerical operations</li>
+<li><code>scipy</code>: Signal processing</li>
+<li><code>matplotlib</code>: Plotting and visualization</li>
+<li><code>scipy.io</code>: For loading <code>.mat</code> files</li>
+<li><code>scipy.signal</code>: For signal processing functions</li>
+</ul>
+<p>You can install the dependencies using <code>pip</code>:</p>
+<pre><code class="language-bash">pip install numpy scipy matplotlib
+</code></pre>
+
+            
+            
+        </body>
+        </html>
