@@ -1,7 +1,6 @@
 from scipy.signal import butter, filtfilt, lfilter, find_peaks
 from scipy.ndimage import uniform_filter1d
 import numpy as np
-from scipy.interpolate import interp1d
 
 class PanTompkins:
     def __init__(self, ecg, fs):
